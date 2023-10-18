@@ -43,7 +43,7 @@ int len_str(const char *strcnt)
 }
 
 /**
- * cmp_str -compares two strings
+ * str_cmp -compares two strings
  * @s1: first string
  * @s2: second string
  * Return: int value

@@ -9,30 +9,26 @@ void exit_cmd(char **usr_tkns, char *cmd_line)
 {
 	int status = 0;
 
-	if (usr_tkns[1] == NULL || (!str_cmp(usr_tkns[1], "0")))
+	if (usr_tkns[1])
+	{
+		status = my_atoi(usr_tkns[1]);
+		if (status == 0)
+		{
+			my_puts("exit: illegal number: ");
+			my_puts(usr_tkns[1]);
+			my_puts("\n");
+		}
+	}
+
+	if (usr_tkns)
 	{
 		free_tkns(usr_tkns);
-		free(cmd_line);
-		exit(0);
 	}
-
-	status = my_atoi(usr_tkns[1]);
-
-	if (status != 0)
+	if (cmd_line)
 	{
-		free_tkns(usr_tkns);
 		free(cmd_line);
-		exit(status);
-	}
-	else
-	{
-		my_puts("exit: illegal number: ");
-		my_puts(usr_tkns[1]);
-		my_puts("\n");
-		exit(2);
 	}
 
-	free_tkns(usr_tkns);
-	free(cmd_line);
-	exit(EXIT_SUCCESS);
+	my_puts("Exiting shell");
+	exit(status);
 }
