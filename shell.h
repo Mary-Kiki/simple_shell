@@ -36,4 +36,4 @@ char **tokenize(char *str, char *del, int len);
 char *locate(char *cmd_name);
 char *pth_conc(char *namepath, char *prgname);
 
-#endif
+#endif /* SHELL_H */
