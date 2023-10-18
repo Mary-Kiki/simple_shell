@@ -62,22 +62,23 @@ int main(void)
 void input_sesame(char *line)
 {
 	int wrd_len = inpt_cnt(line);
-		if (line[0] != '\n' && wrd_len > 0)
-		{
-			char **usr_tkns = tokenize(line, "\t", wrd_len);
-			int execcmd = executeBuiltInCom(usr_tkns, line);
 
-			if (!execcmd)
+	if (line[0] != '\n' && wrd_len > 0)
+	{
+		char **usr_tkns = tokenize(line, "\t", wrd_len);
+		int execcmd = executeBuiltInCom(usr_tkns, line);
+
+		if (!execcmd)
+		{
+			usr_tkns[0] = locate(usr_tkns[0]);
+			if (usr_tkns[0] && access(usr_tkns[0], X_OK) == 0)
 			{
-				usr_tkns[0] = locate(usr_tkns[0]);
-				if (usr_tkns[0] && access(usr_tkns[0], X_OK) == 0)
-				{
-					execute(usr_tkns[0], usr_tkns);
-				} else
-				{
-					perror("Command not found");
-				}
+				execute(usr_tkns);
+			} else
+			{
+				perror("Command not found");
 			}
-			mbali_nhlapo(NULL, usr_tkns);
 		}
+		mbali_nhlapo(NULL, usr_tkns);
+	}
 }

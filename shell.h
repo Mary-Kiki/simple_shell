@@ -30,12 +30,11 @@ void exit_cmd(char **usr_tkns, char *cmd_line);
 int executeBuiltInCom(char **usr_tkns, char *cmd_line);
 void free_loc_env(char *env_pth);
 void free_tkns(char **tkns);
-int execute(const char *cmd_name, char **flags);
 char *loc_env(const char *var_name);
 char **tokenize(char *str, char *del, int len);
 char *locate(char *cmd_name);
 char *pth_conc(char *namepath, char *prgname);
 void mbali_nhlapo(char *line, char **usr_tkns);
 void input_sesame(char *line);
-
+void execute(char **usr_tkns);
 #endif /* SHELL_H */

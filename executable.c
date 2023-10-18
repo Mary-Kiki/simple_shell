@@ -1,28 +1,31 @@
 #include "shell.h"
 /**
  * execute -Executes a command
- * @cmd_name: command to be executed
- * @flags: options or flags for the command
- * Return: 0 for success or -1 for failure
+ * @usr_tkns: user tokens
+ * Return: nothing
  */
-int execute(const char *cmd_name, char **flags)
+void execute(char **usr_tkns)
 {
-	pid_t child;
+	pid_t child_pid;
 	int status;
 
-	switch (child = fork())
+	child_pid = fork();
+	if (child_pid == -1)
 	{
-		case -1:
-			perror("fork failed");
-			return (-1);
-		case 0:
-			execve(cmd_name, flags, environ);
-			break;
-		default:
-			do {
-				waitpid(child, &status, WUNTRACED);
-			} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+		perror("Fork error");
+		exit(EXIT_FAILURE);
 	}
 
-	return (0);
+	if (child_pid == 0)
+	{
+		if (execve(usr_tkns[0], usr_tkns, NULL) == -1)
+		{
+			perror("Execution error");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		waitpid(child_pid, &status, 0);
+	}
 }
