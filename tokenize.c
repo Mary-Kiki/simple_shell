@@ -1,49 +1,32 @@
 #include "shell.h"
 /**
  * tokenize - tokenizes input from string
- * @input: command
- * Return: char
+ * @str: the string to tokenize
+ * @del: delimiter of tokenization
+ * @len: token number
+ * Return: array of tokens
  */
-char **tokenize(char *input)
+char **tokenize(char *str, char *del, int len)
 {
-	const char *DLMTR = " \t\r\n\a";
-	char *cpy, *tkn, **args;
-	int arg_cnt, c;
+	char **tokens = NULL, *token = NULL, *temp = NULL;
+	int t = 0;
 
-	cpy = strdup(input);
-
-	if (cpy == NULL)
-	{
-		perror("Error: ");
+	tokens = malloc(sizeof(char *) * (len + 1));
+	if (!tokens)
 		return (NULL);
-	}
 
-	arg_cnt = 0;
-	tkn = strtok(NULL, DLMTR);
+	str = rm_new_line(str);
+	temp = dup_str(str);
+	token = strtok(temp, del);
 
-	while (tkn != NULL)
+	while (token)
 	{
-		arg_cnt++;
-		tkn = strtok(NULL, DLMTR);
+		tokens[t] = dup_str(token);
+		token = strtok(NULL, del);
+		t++;
 	}
-	args = calloc(arg_cnt + 1, sizeof(char *));
 
-	if (args == NULL)
-	{
-		perror("Error: ");
-		free(cpy);
-		return (NULL);
-	}
-	c = 0;
-	tkn = strtok(input, DLMTR);
-	while (tkn != NULL)
-	{
-		args[c++] = strdup(tkn);
-		tkn = strtok(NULL, DLMTR);
-	}
-	args[c] = NULL;
-	free(cpy);
-
-	return (args);
+	tokens[t] = NULL;
+	free(temp);
+	return (tokens);
 }
-

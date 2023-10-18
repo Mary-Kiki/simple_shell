@@ -1,47 +1,57 @@
 #include "shell.h"
 /**
- * main -space where the code is put
- * @ac: argument count
- * @argv: argument vector
+ * sig_hndlr -handles the signals
+ * @sig_id: identifies the signal to be handles
+ * Return: nothing
+ */
+void sig_hndlr(int sig_id)
+{
+	if (sig_id == SIGINT)
+		write(STDOUT_FILENO, "\n($) ", 5);
+}
+
+/**
+ * main -shells entry point
  * Return: 0 when succesful
  */
-int main(int ac, char **argv)
+int main(void)
 {
-	char *cmd, **args;
-	size_t len = 0;
-	ssize_t getline_jibu;
-	int m;
+	char *line = NULL, **usr_tkns = NULL;
+	int wrd_len = 0, execcmd = 0;
+	size_t size_line = 0;
+	ssize_t line_len = 0;
 
-	while (1)
+	while (line_len >= 0)
 	{
-		printf("%s", "$");
-		getline_jibu = getline(&cmd, &len, stdin);
-		if (getline_jibu == -1)
+		signal(SIGINT, sig_hndlr);
+		if (isatty(STDIN_FILENO))
+			write(STDOUT_FILENO, "($) ", 4);
+		line_len = getline(&line, &size_line, stdin);
+		if (line_len == -1)
 		{
-			printf("Exit!!\n");
-			return (-1);
+			if (isatty(STDIN_FILENO))
+				write(STDOUT_FILENO, "\n", 1);
+			break;
 		}
 
-		args = tokenize(cmd);
-
-		if (args == NULL)
+		wrd_len = inpt_cnt(line);
+		if (line[0] != '\n' && wrd_len > 0)
 		{
-			continue;
+			usr_tkns = tokenize(line, "\t", wrd_len);
+			execcmd = executeBuiltInCom(usr_tkns, line);
+			if (!execcmd)
+			{
+				usr_tkns[0] = locate(usr_tkns[0]);
+				if (usr_tkns[0] && access(usr_tkns[0], X_OK) == 0)
+					execute(usr_tkns[0], usr_tkns);
+				else
+					perror("./hsh");
+			}
+
+			free_tkns(usr_tkns);
 		}
-
-		execprg(args);
-
-		for (m = 0; args[m] != NULL; m++)
-		{
-			free(args[m]);
-		}
-		free(args);
-
-		free(cmd);
-		cmd = NULL;
-		len = 0;
 	}
+
+	free(line);
 	return (0);
-	ac++;
-	argv[m] = "|";
 }

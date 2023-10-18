@@ -1,44 +1,43 @@
 #include "shell.h"
 /**
- * locate -finds the location from the path
- * @cmnd: command that has been input
- * Return: NULL or the path
+ * locate -finds if command is in the system
+ * @cmd_name: command that is being located
+ * Return: NULL upon failure or the path name of command
  */
-char *locate(char *cmnd)
+char *locate(char *cmd_name)
 {
-	char *path, *path_env, *path_cmd, *dir;
-	size_t len;
+	char *env_pth = NULL, **pth_tkns = NULL;
+	int f = 0, del_num = 0;
 
-	path_env = getenv("PATH");
-	if (path_env == NULL)
+	if (cmd_name)
 	{
-		return (NULL);
-	}
-	path = strdup(path_env);
+		struct stat f_info;
 
-	if (path == NULL)
-	{
-		return (NULL);
-	}
-	dir = strtok(path, ":");
-	while (dir != NULL)
-	{
-		len = strlen(dir) + 1 + strlen(cmnd) + 1;
-		path_cmd = malloc(len);
-		if (path_cmd == NULL)
+		if (stat(cmd_name, &f_info) != 0 && cmd_name[0] != '/')
 		{
-			free(path);
-			return (NULL);
-		}
-		snprintf(path_cmd, len, "%s/%s", dir, cmnd);
-		if (access(path_cmd, X_OK) == 0)
+			env_pth = loc_env("PATH");
+			del_num = del_cnt(env_pth, ":") + 1;
+			pth_tkns = tokenize(env_pth, ":", del_num);
+
+		while (pth_tkns[f])
 		{
-			free(path);
-			return (path_cmd);
+			pth_tkns[f] = pth_conc(pth_tkns[f], cmd_name);
+
+			if (stat(pth_tkns[f], &f_info) == 0)
+			{
+				free(cmd_name);
+				cmd_name = dup_str(pth_tkns[f]);
+				free_loc_env(env_pth);
+				free_tkns(pth_tkns);
+				return (cmd_name);
+			}
+
+			f++;
 		}
-		free(path_cmd);
-		dir = strtok(NULL, ":");
+
+		free_loc_env(env_pth);
+		free_tkns(pth_tkns);
+		}
 	}
-	free(path);
 	return (NULL);
 }
