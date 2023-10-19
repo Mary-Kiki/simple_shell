@@ -14,7 +14,6 @@ char **tokenize(char *str, char *del, int len)
 	tokens = malloc(sizeof(char *) * (len + 1));
 	if (!tokens)
 		return (NULL);
-
 	str = rm_new_line(str);
 	temp = dup_str(str);
 	token = strtok(temp, del);
@@ -25,7 +24,6 @@ char **tokenize(char *str, char *del, int len)
 		token = strtok(NULL, del);
 		t++;
 	}
-
 	tokens[t] = NULL;
 	free(temp);
 	return (tokens);

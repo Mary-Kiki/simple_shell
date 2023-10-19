@@ -17,13 +17,19 @@ void sig_hndlr(int sig_id)
  */
 void mbali_nhlapo(char *line, char **usr_tkns)
 {
+	int a;
+
 	if (line)
 	{
 		free(line);
 	}
 	if (usr_tkns)
 	{
-		free_tkns(usr_tkns);
+		for (a = 0; usr_tkns[a] != NULL; a++)
+		{
+			free(usr_tkns[a]);
+		}
+		free(usr_tkns);
 	}
 	my_puts("Exiting shell");
 }
@@ -71,6 +77,7 @@ void input_sesame(char *line)
 		if (!execcmd)
 		{
 			usr_tkns[0] = locate(usr_tkns[0]);
+
 			if (usr_tkns[0] && access(usr_tkns[0], X_OK) == 0)
 			{
 				execute(usr_tkns);

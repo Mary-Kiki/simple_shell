@@ -20,15 +20,8 @@ void exit_cmd(char **usr_tkns, char *cmd_line)
 		}
 	}
 
-	if (usr_tkns)
-	{
-		free_tkns(usr_tkns);
-	}
-	if (cmd_line)
-	{
-		free(cmd_line);
-	}
+	free_tkns(usr_tkns);
+	free(cmd_line);
 
-	my_puts("Exiting shell");
 	exit(status);
 }
