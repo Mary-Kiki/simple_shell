@@ -14,7 +14,7 @@ extern char **environ;
 
 char *conc_str(char *destn, char *source);
 int len_str(const char *strcnt);
-int str_cmp(char *s1, char *s2);
+int str_cmp(const char *s1, const char *s2);
 int cmp_str(const char *s1, const char *s2, size_t len);
 char *dup_str(char *str);
 int my_atoi(char *ptr);

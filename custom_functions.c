@@ -48,34 +48,15 @@ int len_str(const char *strcnt)
  * @s2: second string
  * Return: int value
  */
-int str_cmp(char *s1, char *s2)
+int str_cmp(const char *s1, const char *s2)
 {
-	int len_s1 = 0, len_s2 = 0, psn = 0, diff = 0, limt = 0;
-
-	len_s1 = len_str(s1);
-	len_s2 = len_str(s2);
-
-	if (len_s1 <= len_s2)
-		limt = len_s1;
-	else
-		limt = len_s2;
-	while (psn <= limt)
+	while (*s1 != '\0' && *s2 != '\0' && *s1 == *s2)
 	{
-		if (s1[psn] == s2[psn])
-		{
-			psn++;
-			continue;
-		}
-		else
-		{
-			diff = s1[psn] == s2[psn];
-			break;
-		}
-
-		psn++;
+		s1++;
+		s2++;
 	}
 
-	return (diff);
+	return (*s1 - *s2);
 }
 /**
  * conc_str -concatenates two strings
